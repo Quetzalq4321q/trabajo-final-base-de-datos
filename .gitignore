@@ -1,0 +1,8 @@
+*.aux
+*.log
+*.out
+*.synctex.gz
+.env
+.env.*
+*.dump
+node_modules/

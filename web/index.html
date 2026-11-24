@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="es-PE">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <meta name="description" content="Explora el flujo de ventas de Red Pepper y practica operaciones de base de datos con datos ficticios.">
+  <meta name="color-scheme" content="light dark">
+  <title>Red Pepper | Guía visual del trabajo final</title>
+  <link rel="icon" href="icono-red-pepper.svg?v=20261124d" type="image/svg+xml">
+  <script>
+    const raiz = document.documentElement;
+    raiz.classList.add('preparando');
+    try {
+      const preferencia = localStorage.getItem('red-pepper-tema');
+      if (preferencia === 'claro' || preferencia === 'oscuro') raiz.dataset.temaGuardado = preferencia;
+    } catch {}
+    raiz.dataset.tema = raiz.dataset.temaGuardado || (matchMedia('(prefers-color-scheme: dark)').matches ? 'oscuro' : 'claro');
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500;600&amp;family=Manrope:wght@600;700;800&amp;display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400&amp;display=block">
+  <link rel="stylesheet" href="estilos.css?v=20261124g">
+  <script type="module">
+    try {
+      await import('./inicio.js?v=20261124g');
+    } catch (error) {
+      document.documentElement.classList.remove('preparando');
+      document.getElementById('laboratorio').removeAttribute('aria-busy');
+      document.getElementById('error-carga').hidden = false;
+      console.error('El laboratorio no pudo iniciar.', error);
+    }
+  </script>
+</head>
+<body>
+  <div class="marco">
+    <header class="cabecera">
+      <a class="marca" href="./" aria-label="Inicio del laboratorio Red Pepper">
+        <img class="marca-icono" src="icono-red-pepper.svg?v=20261124d" width="44" height="44" alt="">
+        <span><strong>Red Pepper</strong><small>Guía visual del trabajo final</small></span>
+      </a>
+      <div class="cabecera-acciones">
+        <button class="boton secundario boton-tema" id="boton-tema" type="button" aria-label="Cambiar a modo oscuro" hidden><span class="icono" aria-hidden="true">dark_mode</span><span class="tema-texto">Oscuro</span></button>
+        <a class="boton secundario enlace-informe" href="../informe/informe_final_red_pepper.pdf" aria-label="Informe final"><span class="icono" aria-hidden="true">description</span><span class="informe-texto">Informe final</span></a>
+      </div>
+    </header>
+
+    <aside class="navegacion" aria-label="Recorrido del laboratorio">
+      <nav class="pasos" id="pasos" aria-label="Diapositivas del laboratorio" inert>
+        <button class="paso" type="button" data-paso aria-controls="guia" aria-current="step"><span class="icono" aria-hidden="true">route</span><span>Guía de ventas</span></button>
+        <button class="paso" type="button" data-paso aria-controls="modelo"><span class="icono" aria-hidden="true">account_tree</span><span>Modelo entidad–relación</span></button>
+        <button class="paso" type="button" data-paso aria-controls="tablas"><span class="icono" aria-hidden="true">table_view</span><span>Explorar tablas</span></button>
+        <button class="paso" type="button" data-paso aria-controls="editar"><span class="icono" aria-hidden="true">edit_note</span><span>Editar pedidos</span></button>
+        <button class="paso" type="button" data-paso aria-controls="resumen"><span class="icono" aria-hidden="true">summarize</span><span>Resumen del pedido</span></button>
+      </nav>
+      <p class="practica"><span class="icono" aria-hidden="true">science</span><span>Datos ficticios<br><small>Los cambios se guardan en este navegador.</small></span></p>
+    </aside>
+
+    <main id="laboratorio" aria-busy="true">
+      <div class="carga" id="carga" role="status" aria-label="Cargando laboratorio">
+        <div aria-hidden="true">
+          <div class="hero carga-hero">
+            <div class="carga-titulos"><span class="hueso carga-etiqueta"></span><span class="hueso carga-titulo"></span><span class="hueso carga-texto"></span></div>
+            <div class="hero-marca hueso"></div>
+          </div>
+          <div class="indicadores carga-indicadores">
+            <div><span class="hueso carga-texto"></span><span class="hueso carga-dato"></span></div>
+            <div><span class="hueso carga-texto"></span><span class="hueso carga-dato"></span></div>
+            <div><span class="hueso carga-texto"></span><span class="hueso carga-dato"></span></div>
+          </div>
+          <div class="modelo-grid">
+            <div class="panel carga-panel"><span class="hueso carga-subtitulo"></span><span class="hueso carga-texto"></span><span class="hueso carga-fila"></span><span class="hueso carga-fila"></span><span class="hueso carga-fila"></span></div>
+            <div class="panel carga-panel"><span class="hueso carga-subtitulo"></span><span class="hueso carga-texto"></span><span class="hueso carga-fila"></span><span class="hueso carga-fila"></span></div>
+          </div>
+        </div>
+      </div>
+      <section class="panel error-carga" id="error-carga" aria-labelledby="error-titulo" hidden>
+        <h1 id="error-titulo">El laboratorio no pudo cargar</h1>
+        <p>Vuelve a abrir la página para intentar de nuevo.</p>
+        <a class="boton primario" href="./">Recargar el laboratorio</a>
+      </section>
+      <section class="hero" id="encabezado" aria-labelledby="paso-titulo" hidden>
+        <div class="hero-contenido">
+          <p class="progreso" id="progreso">Paso 1 de 5</p>
+          <h1 id="paso-titulo" tabindex="-1">Guía de ventas</h1>
+          <p id="paso-descripcion">Crea una comanda, agrega productos y revisa cómo se calcula su importe.</p>
+        </div>
+        <div class="hero-marca" aria-hidden="true"><span class="icono" id="hero-icono">route</span></div>
+      </section>
+      <p class="aviso global" id="aviso" role="status" aria-live="polite" hidden></p>
+
+      <section id="guia" class="pantalla" aria-label="Guía de ventas" hidden>
+        <article class="panel">
+          <div class="panel-cabeza"><h2>Arma una venta de práctica</h2><p>Empieza con un pedido nuevo o elige uno de la muestra para ver qué datos se relacionan.</p></div>
+          <div class="filtros">
+            <label>Pedido de la guía<select id="pedido-guia"></select></label>
+            <button class="boton primario" type="button" id="nuevo-guia"><span class="icono" aria-hidden="true">add</span>Nuevo pedido</button>
+          </div>
+          <ol class="flujo-guia" id="flujo-guia" aria-label="Etapas de la venta"></ol>
+        </article>
+        <div class="estacion guia-detalle">
+          <article class="panel" aria-labelledby="guia-productos-titulo">
+            <div class="panel-cabeza"><h2 id="guia-productos-titulo">Productos del pedido</h2><p>Cada producto y su cantidad se guardan juntos en una fila del detalle.</p></div>
+            <div id="guia-lineas"></div>
+            <div class="filtros operacion" id="guia-acciones"></div>
+          </article>
+          <aside class="panel rastreo" id="guia-cambios" aria-label="Cambios recientes en los datos"></aside>
+        </div>
+      </section>
+
+      <section id="modelo" class="pantalla" aria-label="Modelo entidad–relación" hidden>
+        <div class="modelo-grid">
+          <article class="panel panel-mapa">
+            <div class="panel-cabeza"><h2>Mapa de entidades</h2><p>Selecciona una tabla para ver sus campos y las claves que la conectan con las demás.</p></div>
+            <div class="visor-modelo" role="group" aria-label="Mapa de relaciones entre las ocho entidades"><div class="mapa" id="mapa"></div></div>
+            <p class="leyenda-modelo">Cada producto pertenece a un solo subtipo entre snacks, bebidas y hamburguesas.</p>
+            <p class="leyenda-modelo"><strong>PK</strong> clave primaria · <strong>FK</strong> clave foránea · <strong>0..N</strong> cero o muchas filas · <strong>0..1</strong> cero o una fila</p>
+          </article>
+          <article class="panel inspector" id="inspector" aria-label="Campos de la entidad seleccionada"></article>
+        </div>
+      </section>
+
+      <section id="tablas" class="pantalla" aria-label="Explorar tablas" hidden>
+        <article class="panel">
+          <div class="panel-cabeza"><h2 id="tabla-titulo" tabindex="-1">Pedidos</h2><p id="tabla-texto"></p></div>
+          <div class="filtros">
+            <label>Tabla<select id="tabla-elegida"></select></label>
+            <label>Buscar en la tabla<input id="buscar" type="search" placeholder="Producto, estado o clave"></label>
+          </div>
+          <div class="registros" id="registros"></div>
+          <nav class="paginacion" aria-label="Páginas de resultados">
+            <button class="boton secundario" id="pagina-ant" type="button"><span class="icono" aria-hidden="true">chevron_left</span>Anterior</button>
+            <span id="tabla-pagina" aria-live="polite"></span>
+            <button class="boton secundario" id="pagina-sig" type="button">Siguiente<span class="icono" aria-hidden="true">chevron_right</span></button>
+          </nav>
+        </article>
+      </section>
+
+      <section id="editar" class="pantalla" aria-label="Editar pedidos" hidden>
+        <div class="estacion">
+          <article class="panel">
+            <div class="panel-cabeza"><h2>Comanda de práctica</h2><p>Agrega productos, mueve una línea o cambia el estado del pedido.</p></div>
+            <div class="filtros">
+              <label>Pedido<select id="pedido-editar"></select></label>
+              <button class="boton primario" type="button" id="nuevo-pedido"><span class="icono" aria-hidden="true">add</span>Nuevo pedido</button>
+              <button class="boton secundario" type="button" id="editar-cabecera"><span class="icono" aria-hidden="true">edit</span>Editar cliente o modalidad</button>
+            </div>
+            <div id="pedido-lineas"></div>
+            <form id="agregar" class="filtros operacion">
+              <label>Producto<select name="producto" id="producto" required></select></label>
+              <label class="campo-corto">Cantidad<input name="cantidad" type="number" min="1" max="999" value="1" required></label>
+              <button class="boton primario" type="submit"><span class="icono" aria-hidden="true">add_shopping_cart</span>Agregar producto</button>
+            </form>
+            <form id="cambiar-estado" class="filtros operacion">
+              <label>Estado del pedido<select name="estado" id="estado"></select></label>
+              <button class="boton secundario" type="submit"><span class="icono" aria-hidden="true">sync_alt</span>Cambiar estado</button>
+              <button class="boton secundario" id="borrar-pedido" type="button"><span class="icono" aria-hidden="true">delete</span>Borrar pedido</button>
+            </form>
+          </article>
+          <aside class="panel rastreo" id="aprendizaje" aria-label="Relaciones afectadas"></aside>
+        </div>
+      </section>
+
+      <section id="resumen" class="pantalla" aria-label="Resumen del pedido" hidden>
+        <div class="estacion">
+          <article class="panel">
+            <div class="panel-cabeza"><h2>Importe de la comanda</h2><p>Cada importe se calcula con la cantidad y el precio registrado en el detalle.</p></div>
+            <div class="filtros"><label>Pedido para consultar<select id="pedido-resumen"></select></label></div>
+            <div id="resumen-pedido"></div>
+            <div class="filtros operacion"><button class="boton secundario" type="button" id="volver-guia"><span class="icono" aria-hidden="true">route</span>Volver a la guía</button></div>
+          </article>
+          <aside class="panel rastreo" id="resumen-cambios" aria-label="Cambios recientes en los datos"></aside>
+        </div>
+      </section>
+
+      <footer class="pie-pasos" id="pie-pasos" hidden>
+        <button class="boton secundario" type="button" id="anterior"><span class="icono" aria-hidden="true">chevron_left</span>Anterior</button>
+        <span id="paso-pie">Guía de ventas</span>
+        <button class="boton primario" type="button" id="siguiente">Siguiente<span class="icono" aria-hidden="true">chevron_right</span></button>
+      </footer>
+    </main>
+  </div>
+
+  <dialog id="dialogo" aria-labelledby="dialogo-titulo">
+    <form id="dialogo-form" method="dialog">
+      <h2 id="dialogo-titulo"></h2>
+      <p id="dialogo-info"></p>
+      <div id="dialogo-campos" class="dialogo-campos"></div>
+      <div class="dialogo-acciones"><button class="boton secundario" type="button" id="cancelar-dialogo">Cancelar</button><button class="boton primario" type="submit" id="confirmar-dialogo">Aceptar</button></div>
+    </form>
+  </dialog>
+  <noscript><p class="sin-scripts">Activa JavaScript para recorrer el modelo y practicar con los datos.</p></noscript>
+</body>
+</html>

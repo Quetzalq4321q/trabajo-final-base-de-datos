@@ -1,0 +1,197 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=21mm,top=22mm,bottom=22mm]{geometry}
+\usepackage[spanish,es-nodecimaldot]{babel}
+\usepackage{fontspec}
+\setmainfont{Calibri}
+\setmonofont{Consolas}[Scale=.86]
+\usepackage{array,booktabs,fancyhdr,hyperref,tabularx,tikz,xcolor}
+\usetikzlibrary{arrows.meta}
+\definecolor{azul}{HTML}{1648FF}
+\definecolor{tinta}{HTML}{131B32}
+\definecolor{gris}{HTML}{525E77}
+\definecolor{suave}{HTML}{EEF2FF}
+\hypersetup{colorlinks=true,linkcolor=azul,urlcolor=azul,
+  pdftitle={Trabajo final de Base de Datos | Red Pepper},pdfauthor={Papichulos Team},
+  pdfsubject={Modelo relacional y pedidos en PostgreSQL}}
+\urlstyle{same}
+\color{tinta}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\setlength{\headheight}{15pt}
+\renewcommand{\arraystretch}{1.18}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcommand{\campo}[1]{\texttt{#1}}
+\newcommand{\apartado}[1]{\par\vspace{8pt}{\Large\bfseries #1}\par\vspace{2pt}}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small\color{gris} PAPICHULOS TEAM}
+\rhead{\small\color{gris} TRABAJO FINAL DE BASE DE DATOS}
+\lfoot{\small\color{gris} Red Pepper · PostgreSQL}
+\rfoot{\small\color{gris}\thepage}
+\renewcommand{\headrulewidth}{.35pt}
+\newcommand{\lineazul}{\textcolor{azul}{\rule{\linewidth}{1pt}}}
+
+\begin{document}
+
+\begin{titlepage}
+\thispagestyle{empty}
+{\color{azul}\bfseries UNIVERSIDAD LA SALLE}\par
+{\color{gris} Ingeniería de Software · Base de Datos I}\par
+\vspace{14mm}
+\lineazul\par
+\vspace{9mm}
+{\fontsize{33}{36}\selectfont\bfseries Trabajo final de\\ Base de Datos}\par
+\vspace{4mm}
+{\Large Catálogo y pedidos de Red Pepper en PostgreSQL}\par
+\vspace{12mm}
+
+{\large\bfseries Papichulos Team}\par
+Gabriel Andre Pajuelo Aranibar\\
+Victor Gabriel Lupinta Flores\\
+Armando Manuel Enriquez Eguiluz\par
+\vspace{4mm}
+{\color{gris} Docente · Ricardo Fabrizio Calienes Rodriguez}\par
+
+\vspace{9mm}
+\apartado{Resumen}
+Red Pepper reúne salchipapas, hamburguesas, empanadas, sánguches y bebidas en una misma carta. Este trabajo modela cómo un cliente realiza un pedido, cómo se registran sus productos y cómo se calcula el importe de la comanda. PostgreSQL almacena el catálogo y el historial de precios aplicados. Una guía visual permite explorar los datos de práctica y observar los cambios de una comanda.
+
+\begin{tabularx}{\linewidth}{@{}YYY@{}}
+\toprule
+\textbf{Esquema} & \textbf{Catálogo} & \textbf{Muestra de pedidos}\\
+\midrule
+8 tablas y 7 relaciones & 38 productos & 100 pedidos y 186 líneas\\
+\bottomrule
+\end{tabularx}
+
+\vfill
+Arequipa · 24 de noviembre de 2026\par
+\href{https://github.com/Quetzalq4321q/trabajo-final-base-de-datos}{Repositorio del trabajo final}
+\end{titlepage}
+
+\apartado{1. Alcance y modelo entidad–relación}
+El objetivo es organizar el catálogo y los pedidos en una estructura que permita consultar cada comanda y conservar el precio de venta que se le aplicó. El esquema incluye clientes, categorías, productos, sus subtipos, pedidos y detalle.
+
+\begin{center}
+\begin{tikzpicture}[
+  entidad/.style={draw=azul,fill=suave,rounded corners=3pt,minimum width=3.55cm,
+    minimum height=.72cm,font=\small\bfseries,align=center},
+  conexion/.style={draw=gris,-{Stealth[length=1.7mm]},line width=.65pt},
+  cardinal/.style={font=\scriptsize,text=gris,fill=white,inner sep=1.3pt}
+]
+\node[entidad] (clientes) at (0,0) {Clientes};
+\node[entidad] (categorias) at (5.4,0) {Categorías};
+\node[entidad] (pedidos) at (0,-1.45) {Pedidos};
+\node[entidad] (productos) at (5.4,-1.45) {Productos};
+\node[entidad] (detalle) at (0,-2.90) {Detalle del pedido};
+\node[entidad] (snacks) at (11,-1.45) {Snacks};
+\node[entidad] (bebidas) at (11,-2.72) {Bebidas};
+\node[entidad] (hamburguesas) at (11,-3.98) {Hamburguesas};
+
+\draw[conexion] (clientes.south) -- node[cardinal,right] {1 a 0..N} (pedidos.north);
+\draw[conexion] (categorias.south) -- node[cardinal,right] {1 a 0..N} (productos.north);
+\draw[conexion] (pedidos.south) -- node[cardinal,right] {1 a 0..N} (detalle.north);
+\draw[conexion] (productos.west) -- (2.8,-1.45) |- node[cardinal,pos=.84,above] {1 a 0..N} (detalle.east);
+\draw[conexion] (productos.east) -- node[cardinal,above] {1 a 0..1} (snacks.west);
+\draw[conexion] (productos.east) -- (7.55,-1.45) |- node[cardinal,pos=.84,above] {1 a 0..1} (bebidas.west);
+\draw[conexion] (productos.east) -- (7.55,-1.45) |- node[cardinal,pos=.90,above] {1 a 0..1} (hamburguesas.west);
+\end{tikzpicture}
+\end{center}
+
+Cada pedido pertenece a un cliente. \campo{detalle\_pedido} representa las líneas de la comanda y resuelve la relación muchos a muchos entre pedidos y productos. Cada producto tiene una categoría y una sola fila de subtipo entre snacks, bebidas y hamburguesas.
+
+\begin{tabularx}{\linewidth}{@{}lYY@{}}
+\toprule
+\textbf{Tabla} & \textbf{Clave y vínculo} & \textbf{Datos principales}\\
+\midrule
+\campo{clientes} & PK \campo{id\_cliente} & Nombres y apellidos.\\
+\campo{categorias} & PK \campo{id\_categoria} & Nombre único y descripción.\\
+\campo{productos} & PK \campo{id\_producto}, FK a categorías & Nombre, precio y disponibilidad.\\
+\campo{snacks} & PK y FK \campo{id\_producto} & Porción y cremas.\\
+\campo{bebidas} & PK y FK \campo{id\_producto} & Tipo de bebida y envase.\\
+\campo{hamburguesas} & PK y FK \campo{id\_producto} & Carne y acompañamiento de papas.\\
+\campo{pedidos} & PK \campo{id\_pedido}, FK a clientes & Fecha, modalidad y estado.\\
+\campo{detalle\_pedido} & PK compuesta y dos FK & Cantidad y precio unitario aplicado.\\
+\bottomrule
+\end{tabularx}
+
+{\small\color{gris} PK significa clave primaria. FK significa clave foránea. 0..N indica cero o muchas filas y 0..1 indica cero o una fila.}\par
+
+\newpage
+
+\apartado{2. Normalización e integridad}
+\textbf{Primera forma normal.} Los campos guardan valores individuales. Cada combinación de pedido y producto ocupa una fila del detalle, con su cantidad y su precio unitario.
+
+\textbf{Segunda forma normal.} La cantidad y el precio aplicado dependen del par pedido-producto. El nombre y el precio vigente dependen del producto y se guardan en su tabla.
+
+\textbf{Tercera forma normal.} La fila del pedido contiene el identificador del cliente. Los nombres se recuperan desde \campo{clientes}. La descripción de una categoría se guarda en \campo{categorias}. Obtenemos el importe a partir de las líneas mediante \campo{SUM}.
+
+\begin{tabularx}{\linewidth}{@{}lY@{}}
+\toprule
+\textbf{Regla} & \textbf{Implementación}\\
+\midrule
+Integridad referencial & Las claves foráneas exigen que existan el cliente, la categoría y los productos referenciados.\\
+Unicidad de la línea & La clave compuesta \campo{(id\_pedido, id\_producto)} permite una línea por producto dentro de cada pedido.\\
+Cantidades y precios & Las restricciones \campo{CHECK} aceptan cantidades positivas y precios mayores o iguales a cero.\\
+Subtipos & Los disparadores diferidos comprueban que cada producto tenga exactamente un subtipo al confirmar la transacción.\\
+Historial de importes & \campo{agregar\_item} toma el precio vigente en la primera inserción y lo conserva cuando acumula unidades en la misma línea.\\
+\bottomrule
+\end{tabularx}
+
+\apartado{3. Implementación}
+Los archivos SQL crean el esquema definitivo en una base PostgreSQL vacía, cargan la muestra y permiten verificarla. Los identificadores de la muestra coinciden con los de los pedidos ya entregados de la guía visual.
+
+\begin{tabularx}{\linewidth}{@{}lY@{}}
+\toprule
+\textbf{Archivo} & \textbf{Función}\\
+\midrule
+\campo{01\_esquema.sql} & Crea las ocho tablas, restricciones, índices y funciones.\\
+\campo{02\_datos\_demo.sql} & Carga las categorías, el catálogo, los clientes y los pedidos.\\
+\campo{03\_consultas.sql} & Lista las tablas y consulta los importes, el catálogo y el detalle de un pedido.\\
+\bottomrule
+\end{tabularx}
+
+La carta define los precios en soles. El agua y el maracuyá conservan su ficha de producto con \campo{tipo\_bebida} vacío. Las hamburguesas se ofrecen en ocho variantes de res y de pollo con papas.
+
+\newpage
+
+\apartado{4. Verificación de resultados}
+La muestra ficticia abarca del 24 de octubre al 22 de noviembre de 2026, hora de Lima. La verificación comprueba el número de filas y calcula el importe sumando la cantidad por el precio unitario de cada línea.
+
+\begin{tabularx}{\linewidth}{@{}Yrrrrr@{}}
+\toprule
+\textbf{Muestra} & \textbf{Clientes} & \textbf{Productos} & \textbf{Pedidos} & \textbf{Líneas} & \textbf{Importe}\\
+\midrule
+Red Pepper & 12 & 38 & 100 & 186 & S/ 2,303.50\\
+\bottomrule
+\end{tabularx}
+
+\begin{tabularx}{\linewidth}{@{}Yrr@{}}
+\toprule
+\textbf{Modalidad} & \textbf{Pedidos} & \textbf{Importe}\\
+\midrule
+En local & 34 & S/ 464.50\\
+Para llevar & 33 & S/ 766.00\\
+Delivery & 33 & S/ 1,073.00\\
+\midrule
+\textbf{Total} & \textbf{100} & \textbf{S/ 2,303.50}\\
+\bottomrule
+\end{tabularx}
+
+Por ejemplo, el pedido 1 contiene un Triple clásico de S/ 5.00 y una Chicha morada de S/ 3.00. Las dos líneas suman S/ 8.00. Los bloques del archivo \campo{03\_consultas.sql} permiten seguir ese pedido y consultar otro cambiando su identificador.
+
+\apartado{5. Guía visual}
+Desde la raíz del repositorio, inicia un servidor con \campo{python -m http.server 8000 --bind 127.0.0.1} y abre \href{http://127.0.0.1:8000/web/}{la guía visual}. El recorrido recomendado es el siguiente.
+
+\begin{enumerate}
+\item Abre \textbf{Modelo entidad–relación} y selecciona \campo{detalle\_pedido} para ver su clave compuesta.
+\item En \textbf{Guía de ventas}, crea una comanda, agrega un producto y cambia su cantidad. Revisa los valores antes y después.
+\item Abre \textbf{Resumen del pedido} y comprueba el nuevo total.
+\end{enumerate}
+
+Las operaciones de la guía se guardan en el navegador. Puedes consultar la carga de PostgreSQL y reproducir sus resultados mediante los comandos del \href{https://github.com/Quetzalq4321q/trabajo-final-base-de-datos#reproducir-la-base-de-datos}{README}.
+
+\apartado{6. Conclusión}
+La estructura vincula el catálogo con los pedidos mediante claves y conserva los precios aplicados. La muestra permite verificar esa relación desde PostgreSQL y practicarla visualmente con el mismo conjunto de productos y pedidos.
+
+\end{document}
