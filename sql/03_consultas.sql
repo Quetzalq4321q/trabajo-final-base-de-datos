@@ -10,7 +10,7 @@ SELECT (SELECT count(*) FROM salchipaperia.clientes) AS clientes,
        count(*) AS lineas, sum(cantidad * precio_unitario) AS total_pen
 FROM salchipaperia.detalle_pedido;
 
--- Total por modalidad. Un pedido vacío contribuye con un importe de cero.
+-- Importe de todas las comandas por modalidad, incluyendo los borradores.
 SELECT p.tipo_pedido AS modalidad, count(DISTINCT p.id_pedido) AS pedidos,
        coalesce(sum(d.cantidad * d.precio_unitario), 0.00) AS total_pen
 FROM salchipaperia.pedidos p LEFT JOIN salchipaperia.detalle_pedido d USING (id_pedido)
