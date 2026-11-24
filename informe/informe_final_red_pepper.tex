@@ -4,7 +4,7 @@
 \usepackage{fontspec}
 \setmainfont{Times New Roman}
 \setmonofont{Consolas}[Scale=.79]
-\usepackage{array,booktabs,setspace,tabularx,tikz}
+\usepackage{array,booktabs,qrcode,setspace,tabularx,tikz}
 \usetikzlibrary{arrows.meta}
 \usepackage[hidelinks]{hyperref}
 \hypersetup{pdftitle={Trabajo final de Base de Datos | Red Pepper},
@@ -17,6 +17,14 @@
 \newcolumntype{Y}{>{\raggedright\arraybackslash}X}
 \newcommand{\campo}[1]{\texttt{#1}}
 \newcommand{\repo}{https://github.com/Quetzalq4321q/trabajo-final-base-de-datos}
+\newcommand{\diapos}{https://www.figma.com/slides/sVSKsg8ZuSxMXYvqOjkzJq}
+\newcommand{\portal}{https://nexlabsgroup.com/basededatos/}
+\newcommand{\acceso}[2]{%
+  \begin{minipage}[t]{.30\linewidth}\centering
+  \href{#1}{\qrcode*[height=29mm,padding]{#1}}\\[2mm]
+  \href{#1}{\textbf{#2}}
+  \end{minipage}%
+}
 
 \begin{document}
 
@@ -32,12 +40,15 @@ Base de Datos I
 
 \vspace{22mm}
 {\large\bfseries Papichulos Team}\\[3mm]
+\ifdefined\InformePublico
+\else
 Gabriel Andre Pajuelo Aranibar\\
 Victor Gabriel Lupinta Flores\\
 Armando Manuel Enriquez Eguiluz
 
 \vspace{10mm}
 Docente: Ricardo Fabrizio Calienes Rodriguez
+\fi
 
 \vfill
 Arequipa, 24 de noviembre de 2026\\
@@ -202,7 +213,7 @@ Eliminar & Ambas comandas quedan sin líneas. & 0.00\\
 Al finalizar, \campo{ROLLBACK} revierte las operaciones. La verificación posterior confirma los 100 pedidos originales y ninguna comanda de práctica.
 
 \subsection{Recorrido visual}
-Abre la web según el \href{\repo}{README}. Selecciona \campo{detalle\_pedido} en el modelo para ver su clave compuesta. En \textbf{Guía de ventas}, crea una comanda y cambia una cantidad para ver cómo se actualiza el total.
+Abre la \href{\portal}{guía visual}. Selecciona \campo{detalle\_pedido} en el modelo para ver su clave compuesta. En \textbf{Guía de ventas}, crea una comanda y cambia una cantidad para ver cómo se actualiza el total.
 
 \subsection{Conclusión}
 El esquema permite consultar una comanda y conservar su precio histórico aunque cambie el catálogo. Los reportes por modalidad, producto y fecha se pueden reproducir con los mismos datos ficticios usados en la demostración.
@@ -214,5 +225,23 @@ Supabase. \href{https://supabase.com/docs/guides/database/overview}{Documentaci�
 Microsoft Learn. \href{https://learn.microsoft.com/en-us/sql/sql-server/editions-and-components-of-sql-server-latest?view=sql-server-ver17}{Ediciones y características de SQL Server 2025}.\\
 SQLite. \href{https://www.sqlite.org/whentouse.html}{Cuándo utilizar SQLite}.\par
 }
+
+\clearpage
+\section*{Accesos del trabajo final}
+
+Escanea un código o selecciona su título para abrir el recurso.
+
+\vspace{10mm}
+\noindent
+\acceso{https://github.com/Quetzalq4321q/trabajo-final-base-de-datos}{Repositorio}
+\hfill
+\acceso{https://www.figma.com/slides/sVSKsg8ZuSxMXYvqOjkzJq}{Diapositivas en Figma}
+\hfill
+\acceso{https://nexlabsgroup.com/basededatos/}{Guía visual}
+
+\vspace{9mm}
+\href{\diapos}{\nolinkurl{https://www.figma.com/slides/sVSKsg8ZuSxMXYvqOjkzJq}}
+
+El repositorio de GitHub requiere acceso con una cuenta autorizada.
 
 \end{document}

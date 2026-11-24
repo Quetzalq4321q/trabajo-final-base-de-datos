@@ -50,6 +50,8 @@ h3 { font-size: 1.02rem; font-weight: 800; }
 .marco { max-width: 95rem; margin: 0 auto; display: grid; min-height: 100vh; grid-template-columns: 16rem minmax(0, 1fr); grid-template-rows: auto 1fr; }
 .cabecera { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: .75rem; background: var(--paper); border-bottom: 1px solid var(--line); padding: .85rem clamp(1rem, 3vw, 2rem); }
 .cabecera-acciones { display: flex; align-items: center; gap: .5rem; flex: 0 0 auto; white-space: nowrap; }
+.enlaces-entrega { display: flex; align-items: center; gap: .4rem; }
+.marca-recurso { width: 1.125rem; height: 1.125rem; flex: 0 0 auto; }
 .marca { display: inline-flex; align-items: center; gap: .72rem; color: var(--ink); text-decoration: none; min-width: 0; }
 .marca-icono { display: block; width: 2.7rem; height: 2.7rem; flex: 0 0 auto; }
 .marca strong { display: block; font-size: 1.18rem; line-height: 1.22; letter-spacing: -.03em; font-weight: 800; }
@@ -236,12 +238,22 @@ dialog p { color: var(--muted); margin: .55rem 0; }
   .indicadores > div { padding: .55rem .45rem; }
   .flujo-guia { grid-template-columns: minmax(0, 1fr); }
   .cabecera { padding-inline: .8rem; }
-  .enlace-informe, .boton-tema { min-width: 2.75rem; min-height: 2.75rem; padding: .48rem; }
-  .informe-texto, .tema-texto { display: none; }
+  .boton-tema { min-width: 2.75rem; min-height: 2.75rem; padding: .48rem; }
+  .tema-texto { display: none; }
   .paginacion, .pie-pasos { flex-wrap: wrap; }
   .paginacion .boton, .pie-pasos .boton { padding-inline: .45rem; }
 }
 
+@media (max-width: 45rem) {
+  .cabecera-acciones { gap: .35rem; }
+  .enlaces-entrega { gap: .3rem; }
+  .enlace-entrega { min-width: 2.75rem; min-height: 2.75rem; padding: .48rem; }
+  .enlace-texto { display: none; }
+}
+@media (max-width: 26rem) {
+  .cabecera { flex-wrap: wrap; }
+  .cabecera-acciones { width: 100%; gap: .55rem; }
+}
 @media (prefers-reduced-motion: reduce) {
   .pantalla:not([hidden]), .error-carga:not([hidden]), dialog[open], .hueso, .cambio-fila[open] .registros { animation: none; }
   .boton, .paso, .opcion { transition: none; }

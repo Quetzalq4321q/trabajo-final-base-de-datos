@@ -9,7 +9,7 @@
 La entrega modela el catálogo y los pedidos de Red Pepper en PostgreSQL. La muestra contiene 100 pedidos ficticios y la guía visual permite recorrer sus tablas, relaciones y operaciones de práctica.
 
 - [Informe final en PDF](informe/informe_final_red_pepper.pdf) — modelo, justificación de las ocho tablas, elección de PostgreSQL, resultados y demostraciones.
-- [Guía visual interactiva](#abrir-la-guía-visual) — mapa entidad–relación y ejercicios de pedidos.
+- [Guía visual publicada](https://nexlabsgroup.com/basededatos/) — mapa entidad–relación y ejercicios de pedidos. También puedes [abrir la guía en local](#abrir-la-guía-visual).
 - [Reportes de ventas](sql/04_reportes.sql) y [demostración de operaciones](sql/05_demostracion.sql) en PostgreSQL.
 - [Exposición editable en Figma Slides](https://www.figma.com/slides/sVSKsg8ZuSxMXYvqOjkzJq) y [lámina de referencia en Stitch](https://stitch.withgoogle.com/projects/13983078290397647342).
 
